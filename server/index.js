@@ -7,6 +7,8 @@ import connectDB from './config/db.js'
 
 import { Server } from 'socket.io'
 
+import authRoutes from './routes/authRoutes.js'
+
 dotenv.config();
 connectDB()
 
@@ -24,6 +26,8 @@ const io = new Server(server,{
 app.use(cors({ origin: process.env.CLINT_URL , credentials: true }))
 app.use(express.json())
 app.use(cookieParser())
+
+app.use('/api/auth', authRoutes)
 
 app.get('/', (req,res) => {
     res.send('API running')
