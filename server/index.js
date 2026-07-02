@@ -10,6 +10,8 @@ import { Server } from 'socket.io'
 import authRoutes from './routes/authRoutes.js'
 import roomRoutes from './routes/roomRoutes.js'
 
+import { initSocket } from './socket/socketHandler.js'
+
 dotenv.config();
 connectDB()
 
@@ -23,6 +25,7 @@ const io = new Server(server,{
         credentials: true
     }
 })
+initSocket(io)
 
 app.use(cors({ origin: process.env.CLINT_URL , credentials: true }))
 app.use(express.json())
