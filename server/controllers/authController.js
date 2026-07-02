@@ -122,3 +122,8 @@ export const logout = async (req, res) => {
         res.status(500).json({ success: false, message: error.message })
     }
 }
+
+// @route GET /api/auth/me
+export const getMe = async (req, res) => {
+  res.status(200).json({ success: true, user: req.user })
+}
