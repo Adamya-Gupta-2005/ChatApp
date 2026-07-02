@@ -8,6 +8,7 @@ import connectDB from './config/db.js'
 import { Server } from 'socket.io'
 
 import authRoutes from './routes/authRoutes.js'
+import roomRoutes from './routes/roomRoutes.js'
 
 dotenv.config();
 connectDB()
@@ -28,6 +29,7 @@ app.use(express.json())
 app.use(cookieParser())
 
 app.use('/api/auth', authRoutes)
+app.use('/api/rooms', roomRoutes)
 
 app.get('/', (req,res) => {
     res.send('API running')
