@@ -21,13 +21,13 @@ const server = http.createServer(app);
 //socket io
 const io = new Server(server,{
     cors: {
-        origin: process.env.CLINT_URL,
+        origin: process.env.CLIENT_URL,
         credentials: true
     }
 })
 initSocket(io)
 
-app.use(cors({ origin: process.env.CLINT_URL , credentials: true }))
+app.use(cors({ origin: process.env.CLIENT_URL , credentials: true }))
 app.use(express.json())
 app.use(cookieParser())
 

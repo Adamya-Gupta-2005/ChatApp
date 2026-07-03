@@ -1,18 +1,20 @@
-import { useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import axios from 'axios'
 
 
-const AuthContext = useContext()
+const AuthContext = createContext()
 
 export const AuthProvider = ({ children }) => {
 
     const [user, setUser] = useState(null)
     const [loading, setLoading] = useState(true)
 
+    const backendUrl = import.meta.env.VITE_BACKEND_URL
+
     useEffect(() => {
         const checkAuth = async () => {
             try {
-                const res = await axios.get(`${process.env.BACKEND_URL}/api/auth/me`, {
+                const res = await axios.get(`${backendUrl}/api/auth/me`, {
                     withCredentials: true
                 })
                 setUser(res.data.user)
@@ -27,7 +29,7 @@ export const AuthProvider = ({ children }) => {
     }, [])//[] runs only once
 
     const register = async (name, email, password) => {
-        const res = await axios.post(`${process.env.BACKEND_URL}/api/auth/register`, 
+        const res = await axios.post(`${backendUrl}/api/auth/register`, 
             {name,email,password},
             {withCredentials: true}
         )
@@ -35,7 +37,7 @@ export const AuthProvider = ({ children }) => {
     }
 
     const login = async (email, password) => {
-        const res = await axios.post(`${process.env.BACKEND_URL}/api/auth/login`,
+        const res = await axios.post(`${backendUrl}/api/auth/login`,
             {email,password},
             {withCredentials: true}
         )
@@ -43,7 +45,7 @@ export const AuthProvider = ({ children }) => {
     }
 
     const logout = async () => {
-        const res = await axios.post(`${process.env.BACKEND_URL}/api/auth/logout`, {}, {
+        const res = await axios.post(`${backendUrl}/api/auth/logout`, {}, {
             withCredentials: true
         })
         setUser(null)
