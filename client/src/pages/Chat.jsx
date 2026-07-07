@@ -4,7 +4,7 @@ import { useSocket } from '../context/SocketContext.jsx'
 import axios from 'axios';
 import ChatWindow from '../components/ChatWindow.jsx'
 import Sidebar from '../components/Sidebar.jsx'
-import InfoPannel from '../components/InfoPannel.jsx'
+import InfoPanel from '../components/InfoPannel.jsx'
 
 const Chat = () => {
 

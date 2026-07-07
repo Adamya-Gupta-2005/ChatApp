@@ -18,10 +18,13 @@ const sendTokenResponse = (user, statusCode, res) => {
     })
 
     res.status(statusCode).json({
-        id: user._id, 
-        //mongoDB objectId in doc, user.id is _id-object-to-string created by monogoose 
-        name: user.name,
-        email: user.email
+        success: true,
+        user: {
+            id: user._id,
+            //mongoDB objectId in doc, user.id is _id-object-to-string created by monogoose 
+            name: user.name,
+            email: user.email
+        }
     })
 }
 
@@ -106,7 +109,7 @@ export const logout = async (req, res) => {
     try {
 
         if (req.user) {
-            await User.findByIdAndUpdate(req.user.id, {isOnline: false, lastSeen: Date.now() })
+            await User.findByIdAndUpdate(req.user.id, { isOnline: false, lastSeen: Date.now() })
         }
 
         res.cookie('token', '', {
@@ -125,5 +128,5 @@ export const logout = async (req, res) => {
 
 // @route GET /api/auth/me
 export const getMe = async (req, res) => {
-  res.status(200).json({ success: true, user: req.user })
+    res.status(200).json({ success: true, user: req.user })
 }
