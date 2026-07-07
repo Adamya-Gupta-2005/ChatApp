@@ -20,7 +20,7 @@ const ChatWindow = ({ messages, activeRoom, activeDM, socket, currentUser }) => 
   return (
     <div className='chat-window'>
 
-      {/**Header */}
+      {/** Header */}
       <div className="chat-header">
         <h3>{activeRoom ? `# ${activeRoom.name}`: activeDM ? `${activeDM.name}`: 'Select a chat'}</h3>
       </div>
