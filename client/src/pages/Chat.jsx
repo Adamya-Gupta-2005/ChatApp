@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useAuth } from '../context/AuthContext.jsx'
 import { useSocket } from '../context/SocketContext.jsx'
+import axios from 'axios';
 import ChatWindow from '../components/ChatWindow.jsx'
 import Sidebar from '../components/Sidebar.jsx'
 import InfoPanel from '../components/InfoPanel.jsx'

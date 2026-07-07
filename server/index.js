@@ -9,6 +9,7 @@ import { Server } from 'socket.io'
 
 import authRoutes from './routes/authRoutes.js'
 import roomRoutes from './routes/roomRoutes.js'
+import userRoutes from './routes/users.js'
 
 import { initSocket } from './socket/socketHandler.js'
 
@@ -33,6 +34,7 @@ app.use(cookieParser())
 
 app.use('/api/auth', authRoutes)
 app.use('/api/rooms', roomRoutes)
+app.use('/api/users', userRoutes)
 
 app.get('/', (req,res) => {
     res.send('API running')
