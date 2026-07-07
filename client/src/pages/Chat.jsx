@@ -85,6 +85,11 @@ const Chat = () => {
         socket.emit('join_dm', { myId: user._id, otherId: selectedUser._id })
     }
 
+    //handling creationn of room
+    const handleRoomCreated = (newRoom) => {
+        setRooms(prev => [...prev, newRoom])
+    }
+
 
     return (
         <div className='chat-layout'>
@@ -108,7 +113,7 @@ const Chat = () => {
                 activeRoom={activeRoom}
                 activeDM={activeDM}
                 onlineUsers={onlineUsers}
-                users={users}
+                onRoomCreated={handleRoomCreated}
             />
         </div>
     )
