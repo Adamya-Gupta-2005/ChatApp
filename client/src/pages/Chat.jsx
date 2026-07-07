@@ -49,7 +49,7 @@ const Chat = () => {
         })
 
         //dm messages
-        socket.on('recieve_dm', (message) => {
+        socket.on('receive_dm', (message) => {
             setMessages(prev => [...prev, message])
         })
 
@@ -62,7 +62,7 @@ const Chat = () => {
         return () => {
             socket.off('room_history')
             socket.off('recieve_room_message')
-            socket.off('recieve_dm')
+            socket.off('receive_dm')
             socket.off('user_status')
         }
     }, [socket])

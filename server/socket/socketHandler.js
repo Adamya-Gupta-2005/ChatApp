@@ -76,7 +76,7 @@ export const initSocket = (io) => {
                 const populated = await message.populate('sender', 'name')
 
                 const dmRoom = [socket.userId, recipientId].sort().join('_')
-                io.to(dmRoom).emit('recieve_dm', populated)
+                io.to(dmRoom).emit('receive_dm', populated)
 
             } catch (error) {
                 socket.emit('error', { message: error.message })
