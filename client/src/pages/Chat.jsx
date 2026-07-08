@@ -6,6 +6,8 @@ import ChatWindow from '../components/ChatWindow.jsx'
 import Sidebar from '../components/Sidebar.jsx'
 import InfoPanel from '../components/InfoPannel.jsx'
 
+import '../styles/Chat.css'
+
 const Chat = () => {
 
     const { user } = useAuth()
@@ -43,8 +45,8 @@ const Chat = () => {
         if (!socket) return;
 
         //room messages
-        socket.on('room-history', (history) => setMessages(history))
-        socket.on('recieve_room_message', (message) => {
+        socket.on('room_history', (history) => setMessages(history))
+        socket.on('receive_room_message', (message) => {
             setMessages(prev => [...prev, message])
         })
 
@@ -52,6 +54,9 @@ const Chat = () => {
         socket.on('receive_dm', (message) => {
             setMessages(prev => [...prev, message])
         })
+
+        //dm messages
+        socket.on('dm_history', (history) => setMessages(history))
 
         //online Status
         socket.on('user_status', ({ userId, isOnline }) => {
@@ -61,19 +66,47 @@ const Chat = () => {
         //cleanup
         return () => {
             socket.off('room_history')
-            socket.off('recieve_room_message')
+            socket.off('receive_room_message')
             socket.off('receive_dm')
             socket.off('user_status')
+            socket.off('dm_history')
         }
     }, [socket])
 
     //join room via socket
-    const handleRoomSelect = (room) => {
+    const [pendingRoom, setPendingRoom] = useState(null)
+    const handleRoomSelect = async (room) => {
         if (activeRoom) socket.emit('leave_room', activeRoom._id);
+
+        if (room.isPrivate) {
+            const isMember = room.members.some(m =>
+                (m._id || m).toString() === user._id.toString()
+            )
+            if (!isMember) {
+                setPendingRoom(room)
+                return
+            }
+        }
+
         setActiveDM(null)
         setActiveRoom(room)
         setMessages([])
         socket.emit('join_room', room._id)
+    }
+    const handleJoinWithPassword = async (password) => {
+        try {
+            await axios.post(`${backendUrl}/api/rooms/${pendingRoom._id}/join`,{password}, { withCredentials: true })
+            
+            setRooms(prev => prev.map(r =>
+                r._id === pendingRoom._id ? { ...r, members: [...r.members, user._id] } : r
+            ))
+            setActiveRoom(pendingRoom)
+            setMessages([])
+            socket.emit('join_room', pendingRoom._id)
+            setPendingRoom(null)
+        } catch (error) {
+            return error.response?.data?.message || 'Wrong Password'
+        }
     }
 
     //join dm via socket
@@ -88,6 +121,19 @@ const Chat = () => {
     //handling creationn of room
     const handleRoomCreated = (newRoom) => {
         setRooms(prev => [...prev, newRoom])
+    }
+
+    const handleBack = () => {
+        if (activeRoom) socket.emit('leave_room', activeRoom._id);
+        setActiveRoom(null)
+        setActiveDM(null)
+        setMessages([])
+    }
+
+    const handleRoomDeleted = (roomId) => {
+        setRooms(prev => prev.filter(r => r._id !== roomId))
+        setActiveRoom(null)
+        setMessages([])
     }
 
 
@@ -108,12 +154,18 @@ const Chat = () => {
                 activeDM={activeDM}
                 socket={socket}
                 currentUser={user}
+                onBack={handleBack}
             />
             <InfoPanel
                 activeRoom={activeRoom}
                 activeDM={activeDM}
                 onlineUsers={onlineUsers}
                 onRoomCreated={handleRoomCreated}
+                onRoomDeleted={handleRoomDeleted}
+                currentUser={user}
+                pendingRoom={pendingRoom}
+                onJoinWithPassword={handleJoinWithPassword}
+                onCancelJoin={() => setPendingRoom(null)}
             />
         </div>
     )

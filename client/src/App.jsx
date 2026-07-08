@@ -2,6 +2,9 @@ import React from 'react'
 import { BrowserRouter, Routes, Navigate, Route } from 'react-router-dom'
 import { useAuth } from './context/AuthContext.jsx'
 
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css';
+
 import Login from './pages/Login.jsx'
 import Register from './pages/Register.jsx'
 import Chat from './pages/Chat.jsx'
@@ -24,6 +27,7 @@ const App = () => {
           </ProtectedRoute>
         } />
       </Routes>
+      <ToastContainer position="top-right" autoClose={3000} />
     </BrowserRouter>
   )
 }

@@ -1,7 +1,11 @@
 import React, { useState } from 'react'
 
+import '../styles/chatWindow.css'
 
-const ChatWindow = ({ messages, activeRoom, activeDM, socket, currentUser }) => {
+import { GrFormPrevious } from "react-icons/gr";
+import { RiSendInsFill } from "react-icons/ri";
+
+const ChatWindow = ({ messages, activeRoom, activeDM, socket, currentUser, onBack }) => {
   const [content, setContent] = useState('')
 
   const handleSend = () => {
@@ -14,15 +18,19 @@ const ChatWindow = ({ messages, activeRoom, activeDM, socket, currentUser }) => 
   }
 
   const handleKeyDown = (e) => {
-    if(e.key === 'Enter') handleSend()
+    if (e.key === 'Enter') handleSend()
   }
+
 
   return (
     <div className='chat-window'>
 
       {/** Header */}
       <div className="chat-header">
-        <h3>{activeRoom ? `# ${activeRoom.name}`: activeDM ? `${activeDM.name}`: 'Select a chat'}</h3>
+        <h3>{activeRoom ? ` ${activeRoom.name}` : activeDM ? `${activeDM.name}` : 'Select a chat'}</h3>
+        {(activeRoom || activeDM) && (
+          <button className='back-btn' onClick={onBack}><GrFormPrevious />Back</button>
+        )}
       </div>
 
       {/** Messages */}
@@ -50,7 +58,7 @@ const ChatWindow = ({ messages, activeRoom, activeDM, socket, currentUser }) => 
           onChange={(e) => setContent(e.target.value)}
           onKeyDown={handleKeyDown}
         />
-        <button onClick={handleSend}>Send</button>
+        <button onClick={handleSend}><RiSendInsFill size={25}/></button>
       </div>
 
     </div>

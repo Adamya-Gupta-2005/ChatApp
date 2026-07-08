@@ -12,12 +12,15 @@ export const SocketProvider = ({ children }) => {
 
         if(user) {
             socket.connect()
-            socket.emit('user_connected', user._id)
+            socket.on('connect', () => {
+                socket.emit('user_connected', user._id)
+            })
         }
 
         //clean-up function
         return () => {
             if(user) {
+                socket.off('connect')
                 socket.disconnect()
             }
         }

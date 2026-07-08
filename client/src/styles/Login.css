@@ -1,0 +1,126 @@
+body {
+    background-image: url('../assets/ChatAppBG.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.Auth-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    width: 100vw;
+    padding: 20px;
+}
+
+.auth-form {
+    width: 100%;
+    max-width: 420px;
+    padding: 20px 50px;
+
+    background: rgba(255, 255, 255, 0.07);
+    backdrop-filter: blur(30px) saturate(160%);
+    -webkit-backdrop-filter: blur(30px) saturate(160%);
+
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 24px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+
+    display: flex;
+    flex-direction: column;
+}
+
+.auth-form h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 18px;
+    text-align: center;
+    color: #ffffff;
+    letter-spacing: -0.5px;
+}
+
+.auth-form label {
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: 6px;
+    font-weight: 500;
+}
+
+.auth-form input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 12px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    color: #ffffff;
+    font-size: 0.9rem;
+    outline: none;
+}
+
+
+
+.auth-form button[type='submit'] {
+    width: 100%;
+    padding: 8px;
+    margin-top: 18px;
+    margin-bottom: 8px;
+    background: linear-gradient(135deg, #9351bc 0%, #5a189a 100%);
+    border: none;
+    border-radius: 8px;
+    color: #ffffff;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+
+}
+
+
+
+.auth-form p {
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.5);
+    text-align: center;
+}
+
+.auth-form p a {
+    color: #b381dd;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+@media screen and (max-width: 480px) {
+    .Auth-container {
+        padding: 30px;
+    }
+
+    .auth-form {
+        padding: 30px 20px;
+        border-radius: 20px;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+    }
+
+    .auth-form h2 {
+        font-size: 1.3rem;
+        margin-bottom: 14px;
+    }
+
+    .auth-form label {
+        font-size: 0.7rem;
+    }
+
+    .auth-form input {
+        padding: 8px;
+        font-size: 0.8rem;
+    }
+
+    .auth-form button[type='submit'] {
+        padding: 8px;
+        font-size: 0.8rem;
+    }
+
+    .auth-form p {
+        font-size: 0.7rem;
+    }
+}

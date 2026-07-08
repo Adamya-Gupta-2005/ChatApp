@@ -2,11 +2,14 @@ import React, { useState } from 'react'
 import { useAuth } from '../context/AuthContext'
 import { useNavigate, Link } from 'react-router-dom'
 
+import { toast } from 'react-toastify'
+
+import '../styles/Login.css'
+
 const Login = () => {
 
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
-    const [error, setError] = useState(null)
 
     const { login } = useAuth()
     const navigate = useNavigate()
@@ -15,9 +18,10 @@ const Login = () => {
         e.preventDefault()
         try {
             await login(email, password)
+            toast.success('Login Successfull')
             navigate('/')
         } catch (error) {
-            setError(error.response?.data?.message || 'Login failed')
+            toast.error(error.response?.data?.message || 'Login failed')
         }
     }
 
@@ -26,7 +30,7 @@ const Login = () => {
             <form className='auth-form' onSubmit={handleSubmit}>
                 <h2>Welcome Back</h2>
 
-                {error && <p className='error'>{error}</p>}
+                
 
                 <label htmlFor="email">Email</label>
                 <input

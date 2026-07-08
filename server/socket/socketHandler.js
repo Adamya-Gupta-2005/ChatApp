@@ -1,8 +1,6 @@
 import RoomMessage from '../models/roomMessageModel.js'
 import DirectMessage from '../models/directMessageModel.js'
 import User from '../models/userModel.js'
-import { Socket } from 'socket.io'
-
 
 //io is entire server and socket is one connected client
 export const initSocket = (io) => {
@@ -13,6 +11,7 @@ export const initSocket = (io) => {
         socket.on('user_connected', async (userId) => {
             socket.userId = userId
             await User.findByIdAndUpdate(userId, { isOnline: true })
+            io.emit('user_status', { userId, isOnline: true })
 
             //sends update to everyone
             io.emit('user_status', {
@@ -26,8 +25,8 @@ export const initSocket = (io) => {
             socket.join(roomId)
 
             //sending last 50 msgs to user who just joined
-            const message = await RoomMessage.find(({room: roomId}))
-            .sort({createdAt: -1}).limit(50).populate('sender', 'name')
+            const message = await RoomMessage.find({ room: roomId })
+                .sort({ createdAt: -1 }).limit(50).populate('sender', 'name')
 
             socket.emit('room_history', message.reverse())
         })
@@ -44,9 +43,9 @@ export const initSocket = (io) => {
                 //fills sender with name
 
                 //broadcast to everyone in room including sender
-                io.to(roomId).emit('recieve_room_message', populated)
+                io.to(roomId).emit('receive_room_message', populated)
             } catch (error) {
-                socket.emit('error', {message:error.message})
+                socket.emit('error', { message: error.message })
             }
         })
 
@@ -55,17 +54,28 @@ export const initSocket = (io) => {
         })
 
         //DM Events
-        socket.on('join_dm', ({myId, otherId}) => {
+        socket.on('join_dm', async ({ myId, otherId }) => {
 
             //creating unique room for two user, 
             //sorting because roomId is same regardless who starts
             const dmRoom = [myId, otherId].sort().join('_')
             socket.join(dmRoom)
+
+            const messages = await DirectMessage.find({
+                $or: [
+                    { sender: myId, recipient: otherId },
+                    { sender: otherId, recipient: myId }
+                ]
+            }).sort({ createdAt: -1 })
+            .limit(50)
+            .populate('sender', 'name')
+
+            socket.emit('dm_history', messages.reverse())
         })
 
-        socket.on('send_dm', async ({recipientId, content}) => {
+        socket.on('send_dm', async ({ recipientId, content }) => {
             try {
-                
+
                 const message = await DirectMessage.create({
                     sender: socket.userId,
                     //userId was set during user_connected
@@ -85,12 +95,12 @@ export const initSocket = (io) => {
 
         //disconnect
         socket.on('disconnect', async () => {
-            if(socket.userId) {
+            if (socket.userId) {
                 await User.findByIdAndUpdate(socket.userId, {
                     isOnline: false,
                     lastSeen: Date.now()
                 })
-                io.emit('user_status', {userId: socket.userId, isOnline: false})
+                io.emit('user_status', { userId: socket.userId, isOnline: false })
             }
             console.log('user disconnected', socket.id)
         })
