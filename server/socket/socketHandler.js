@@ -2,6 +2,8 @@ import RoomMessage from '../models/roomMessageModel.js'
 import DirectMessage from '../models/directMessageModel.js'
 import User from '../models/userModel.js'
 
+const userSocketMap = {};
+
 //io is entire server and socket is one connected client
 export const initSocket = (io) => {
     io.on('connection', (socket) => {
@@ -10,6 +12,7 @@ export const initSocket = (io) => {
         //set user online
         socket.on('user_connected', async (userId) => {
             socket.userId = userId
+            userSocketMap[userId] = socket.id; // mapping userid to socketid
             await User.findByIdAndUpdate(userId, { isOnline: true })
             io.emit('user_status', { userId, isOnline: true })
 
@@ -90,6 +93,49 @@ export const initSocket = (io) => {
 
             } catch (error) {
                 socket.emit('error', { message: error.message })
+            }
+        });
+
+
+        //WEBRTC call eveents
+
+        //a calls b - forward offer to b only
+        socket.on('call-user', ({ offer, to, from, callerName}) => {
+            const recipientSocket = userSocketMap[to];
+            if(recipientSocket) {
+                io.to(recipientSocket).emit('incoming-call', {offer, from, callerName})
+            }
+        })
+
+        //b accepts - forward answer to a only
+        socket.on('call-accepted', ({answer, to}) => {
+            const callerSocket = userSocketMap[to];
+            if(callerSocket) {
+                io.to(callerSocket).emit('call_acccepted',  { answer })
+            }
+        })
+
+        //b rejects - tell a
+        socket.on('call_rejected', ({to}) => {
+            const callerSocket = userSocketMap[to]
+            if(callerSocket){
+                io.to(callerSocket).emit('call_rejected')
+            }
+        })
+
+        //ice candidates - forward to other peer
+        socket.on('ice-candidate', ({ candidate, to }) => {
+            const targetSocket = userSocketMap[to]
+            if(targetSocket) {
+                io.to(targetSocket).emit('ice_candidate', {candidate})
+            }
+        })
+
+        //if any one hangs up - tell other peer
+        socket.on('call_ended', ({to}) => {
+            const targetSocket = userSocketMap[to]
+            if(targetSocket){
+                io.to(targetSocket).emit('call_ended')
             }
         })
 
