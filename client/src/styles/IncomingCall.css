@@ -1,0 +1,65 @@
+.incoming-call-modal {
+  background: rgba(20, 10, 40, 0.97);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 20px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 101;
+  min-width: 280px;
+}
+
+.incoming-avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background-color: rgb(152, 100, 152);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem;
+  font-weight: 500;
+  color: beige;
+  margin-bottom: 4px;
+}
+
+.incoming-call-modal h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+.incoming-call-modal p {
+  font-size: 0.82rem;
+  margin-top: 18px;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.incoming-call-actions {
+  display: flex;
+  gap: 16px;
+  margin-top: 8px;
+}
+
+.accept-btn {
+  background: #1c824c;
+  color: #fff;
+  border: none;
+  border-radius: 25px;
+  padding: 10px 28px;
+  font-size: 0.88rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.reject-btn {
+  background: #6d2c2c;
+  color: #fff;
+  border: none;
+  border-radius: 25px;
+  padding: 10px 28px;
+  font-size: 0.88rem;
+  font-weight: 500;
+  cursor: pointer;
+}

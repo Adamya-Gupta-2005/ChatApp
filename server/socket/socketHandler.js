@@ -14,13 +14,16 @@ export const initSocket = (io) => {
             socket.userId = userId
             userSocketMap[userId] = socket.id; // mapping userid to socketid
             await User.findByIdAndUpdate(userId, { isOnline: true })
-            io.emit('user_status', { userId, isOnline: true })
 
             //sends update to everyone
             io.emit('user_status', {
                 userId,
                 isOnline: true
             })
+
+            //send all currently active user to newly connected user
+            const onlineUserIds = Object.keys(userSocketMap)
+            socket.emit('online_users', onlineUserIds)
         })
 
         //Room Event
@@ -100,18 +103,18 @@ export const initSocket = (io) => {
         //WEBRTC call eveents
 
         //a calls b - forward offer to b only
-        socket.on('call-user', ({ offer, to, from, callerName}) => {
+        socket.on('call_user', ({ offer, to, from, callerName}) => {
             const recipientSocket = userSocketMap[to];
             if(recipientSocket) {
-                io.to(recipientSocket).emit('incoming-call', {offer, from, callerName})
+                io.to(recipientSocket).emit('incoming_call', {offer, from, callerName})
             }
         })
 
         //b accepts - forward answer to a only
-        socket.on('call-accepted', ({answer, to}) => {
+        socket.on('call_accepted', ({answer, to}) => {
             const callerSocket = userSocketMap[to];
             if(callerSocket) {
-                io.to(callerSocket).emit('call_acccepted',  { answer })
+                io.to(callerSocket).emit('call_accepted',  { answer })
             }
         })
 
@@ -124,7 +127,7 @@ export const initSocket = (io) => {
         })
 
         //ice candidates - forward to other peer
-        socket.on('ice-candidate', ({ candidate, to }) => {
+        socket.on('ice_candidate', ({ candidate, to }) => {
             const targetSocket = userSocketMap[to]
             if(targetSocket) {
                 io.to(targetSocket).emit('ice_candidate', {candidate})
@@ -142,6 +145,8 @@ export const initSocket = (io) => {
         //disconnect
         socket.on('disconnect', async () => {
             if (socket.userId) {
+                delete userSocketMap[socket.userId]
+
                 await User.findByIdAndUpdate(socket.userId, {
                     isOnline: false,
                     lastSeen: Date.now()

@@ -3,10 +3,11 @@ import axios from 'axios'
 
 import '../styles/infoPannel.css'
 import { MdDelete } from "react-icons/md";
+import { MdVideoCall } from "react-icons/md";
 
-const InfoPannel = ({ activeRoom, activeDM, onlineUsers, onRoomCreated, onRoomDeleted, currentUser, pendingRoom, onJoinWithPassword, onCancelJoin }) => {
+const InfoPannel = ({ activeRoom, activeDM, onlineUsers, onRoomCreated, onRoomDeleted, currentUser, pendingRoom, onJoinWithPassword, onCancelJoin, onStartCall }) => {
 
-  const [isForm, setIsForm] = useState(0);
+  const [isForm, setIsForm] = useState(null);
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
   const [isPrivate, setIsPrivate] = useState(false)
@@ -85,6 +86,10 @@ const InfoPannel = ({ activeRoom, activeDM, onlineUsers, onRoomCreated, onRoomDe
         </div>
       )}
 
+      {activeDM && (
+        <div className="call-btn-cont"><button className="call-btn" onClick={onStartCall}> <MdVideoCall size={19} /> Video Call </button></div>
+      )}
+
       {/** Nothing selected */}
       {!activeDM && !activeRoom && (
         <>
@@ -154,7 +159,6 @@ const InfoPannel = ({ activeRoom, activeDM, onlineUsers, onRoomCreated, onRoomDe
           <button type='submit'>Create Room</button>
         </form>
       )}
-
     </div>
   )
 }

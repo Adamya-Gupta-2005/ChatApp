@@ -6,6 +6,10 @@ import ChatWindow from '../components/ChatWindow.jsx'
 import Sidebar from '../components/Sidebar.jsx'
 import InfoPanel from '../components/InfoPannel.jsx'
 
+import useWebRTC from '../hooks/useWebRTC.js';
+import VideoCall from '../components/VideoCall.jsx';
+import IncomingCall from '../components/IncomingCall.jsx';
+
 import '../styles/Chat.css'
 
 const Chat = () => {
@@ -63,6 +67,11 @@ const Chat = () => {
             setOnlineUsers(prev => isOnline ? [...new Set([...prev, userId])] : prev.filter(id => id !== userId))
         })
 
+        //display online user for new logged in id
+        socket.on('online_users', (userIds) => {
+            setOnlineUsers(userIds)
+        })
+
         //cleanup
         return () => {
             socket.off('room_history')
@@ -70,6 +79,7 @@ const Chat = () => {
             socket.off('receive_dm')
             socket.off('user_status')
             socket.off('dm_history')
+            socket.off('online_users')
         }
     }, [socket])
 
@@ -95,8 +105,8 @@ const Chat = () => {
     }
     const handleJoinWithPassword = async (password) => {
         try {
-            await axios.post(`${backendUrl}/api/rooms/${pendingRoom._id}/join`,{password}, { withCredentials: true })
-            
+            await axios.post(`${backendUrl}/api/rooms/${pendingRoom._id}/join`, { password }, { withCredentials: true })
+
             setRooms(prev => prev.map(r =>
                 r._id === pendingRoom._id ? { ...r, members: [...r.members, user._id] } : r
             ))
@@ -136,6 +146,13 @@ const Chat = () => {
         setMessages([])
     }
 
+    const {
+        callState, incomingCall,
+        localVideoRef, remoteVideoRef,
+        startCall, acceptCall,
+        rejectCall, hangup
+    } = useWebRTC(socket, user, activeDM)
+
 
     return (
         <div className='chat-layout'>
@@ -166,7 +183,24 @@ const Chat = () => {
                 pendingRoom={pendingRoom}
                 onJoinWithPassword={handleJoinWithPassword}
                 onCancelJoin={() => setPendingRoom(null)}
+                onStartCall={startCall}
             />
+
+            <VideoCall 
+                localVideoRef={localVideoRef}
+                remoteVideoRef={remoteVideoRef}
+                callState={callState}
+                activeDM={activeDM}
+                hangup={hangup}
+            />
+
+            <IncomingCall 
+                incomingCall={incomingCall}
+                callState={callState}
+                acceptCall={acceptCall}
+                rejectCall={rejectCall}
+            />
+
         </div>
     )
 }
