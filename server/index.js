@@ -24,7 +24,9 @@ const io = new Server(server,{
     cors: {
         origin: process.env.CLIENT_URL,
         credentials: true
-    }
+    },
+    transports: ['websocket', 'polling'] 
+// this means use websockets initially if browser supports, if sockets fails use polling to maintain connnection, in polling clent repeatedly asks server for any data
 })
 initSocket(io)
 
