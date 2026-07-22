@@ -6,7 +6,26 @@ import { useRef, useCallback } from "react"
 const iceServers = {
     iceServers: [
         { urls: 'stun:stun.l.google.com:19302' },
-        { urls: 'stun:stun1.l.google.com:19302' }
+        { urls: 'stun:stun1.l.google.com:19302' },
+
+        //STUN just discovers your public IP. TURN actually relays the video when peer-to-peer fails due to NAT/firewall restrictions.
+
+        {
+            urls: 'turn:openrelay.metered.ca:80',
+            username: 'openrelayproject',
+            credential: 'openrelayproject'
+        },
+        {
+            urls: 'turn:openrelay.metered.ca:443',
+            username: 'openrelayproject',
+            credential: 'openrelayproject'
+        },
+        {
+            urls: 'turn:openrelay.metered.ca:443?transport=tcp',
+            username: 'openrelayproject',
+            credential: 'openrelayproject'
+        }
+
     ]
 }
 
@@ -60,6 +79,10 @@ const useWebRTC = (socket, currentUser, activeDM) => {
 
     const createPeer = (targetUserId) => {
         const pc = new RTCPeerConnection(iceServers)
+
+        pc.oniceconnectionstatechange = () => {
+            console.log('ICE state:', pc.iceConnectionState)
+        }
 
         // when we get ICE candidates, send them to the other peer via socket
         pc.onicecandidate = (e) => {
