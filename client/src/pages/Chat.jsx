@@ -157,7 +157,8 @@ const Chat = () => {
         setRemoteVideoRef, setLocalVideoRef,
         startCall, acceptCall,
         rejectCall, hangup,
-        localStream, remoteStream, remoteStreamReady
+        localStream, remoteStream, remoteStreamReady,
+        iceConfigReady
     } = useWebRTC(socket, user, activeDM)
 
 
@@ -191,6 +192,7 @@ const Chat = () => {
                 onJoinWithPassword={handleJoinWithPassword}
                 onCancelJoin={() => setPendingRoom(null)}
                 onStartCall={startCall}
+                iceConfigReady={iceConfigReady}
             />
 
             <VideoCall

@@ -5,7 +5,7 @@ import '../styles/infoPannel.css'
 import { MdDelete } from "react-icons/md";
 import { MdVideoCall } from "react-icons/md";
 
-const InfoPannel = ({ activeRoom, activeDM, onlineUsers, onRoomCreated, onRoomDeleted, currentUser, pendingRoom, onJoinWithPassword, onCancelJoin, onStartCall }) => {
+const InfoPannel = ({ activeRoom, activeDM, onlineUsers, onRoomCreated, onRoomDeleted, currentUser, pendingRoom, onJoinWithPassword, onCancelJoin, iceConfigReady, onStartCall }) => {
 
   const [isForm, setIsForm] = useState(null);
   const [name, setName] = useState('')
@@ -87,7 +87,13 @@ const InfoPannel = ({ activeRoom, activeDM, onlineUsers, onRoomCreated, onRoomDe
       )}
 
       {activeDM && (
-        <div className="call-btn-cont"><button className="call-btn" onClick={onStartCall}> <MdVideoCall size={19} /> Video Call </button></div>
+        <div className="call-btn-cont">
+          <button 
+            className="call-btn" 
+            onClick={onStartCall} 
+            disabled={!iceConfigReady}
+            style={{ opacity: iceConfigReady ? 1 : 0.5 }}>
+            <MdVideoCall size={19} /> Video Call </button></div>
       )}
 
       {/** Nothing selected */}

@@ -131,6 +131,10 @@ const useWebRTC = (socket, currentUser, activeDM) => {
 
     const startCall = async () => {
         if (!activeDM) return
+        if (!iceConfig) {
+            alert('Setting up connection, please try again in a moment')
+            return
+        }
         try {
             setCallState('calling')
 
@@ -256,7 +260,8 @@ const useWebRTC = (socket, currentUser, activeDM) => {
         callState, incomingCall, localVideoRef, remoteVideoRef,
         setRemoteVideoRef, setLocalVideoRef,
         startCall, acceptCall, rejectCall, hangup,
-        localStream, remoteStream, remoteStreamReady
+        localStream, remoteStream, remoteStreamReady,
+        iceConfigReady: iceConfig !== null
     }
 }
 
