@@ -11,7 +11,7 @@
 }
 
 .call-modal {
-    background: rgba(20, 10, 40, 0.95);
+    background: rgba(39, 32, 53, 0.95);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 20px;
     padding: 24px;
@@ -24,105 +24,95 @@
     z-index: 101;
 }
 
-.call-modal {
-  background: rgba(39, 32, 53, 0.95);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 20px;
-  padding: 24px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 16px;
-  width: 620px;
-  max-width: 92vw;
-  z-index: 101;
-}
-
 .call-title {
-  font-size: 0.95rem;
-  font-weight: 600;
-  color: rgba(255, 255, 255, 0.85);
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.85);
 }
 
 .call-videos {
-  position: relative;
-  width: 100%;
-  border-radius: 10px;
-  overflow: hidden;
-  background: #0a0a14;
+    position: relative;
+    width: 100%;
+    border-radius: 10px;
+    overflow: hidden;
+    background: #0a0a14;
 }
 
 .remote-video-wrapper {
-  width: 100%;
-  aspect-ratio: 4/3;
-  position: relative;
+    width: 100%;
+    aspect-ratio: 4/3;
+    position: relative;
+    background: #0a0a14;
 }
 
 .remote-video {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 14px;
-  background: #0a0a14;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 14px;
+    background: #0a0a14;
+    display: block;  
 }
 
-
 .calling-placeholder {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
 }
 
 .calling-avatar {
-  width: 72px;
-  height: 72px;
-  border-radius: 50%;
-  background: rgb(130, 77, 130);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.8rem;
-  font-weight:500;
-  color: #fff;
-  margin-bottom: 5px;
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background: rgb(130, 77, 130);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    font-weight: 500;
+    color: #fff;
 }
 
 .calling-placeholder p {
-  color: rgba(255, 255, 255, 0.5);
-  font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.85rem;
 }
 
-/* local video — small pip in corner */
+
 .local-video-wrapper {
-  position: absolute;
-  bottom: 12px;
-  right: 12px;
-  width: 120px;
-  aspect-ratio: 4/3;
-  border-radius: 8px;
-  overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    position: absolute;
+    bottom: 12px;
+    right: 12px;
+    width: 120px;
+    aspect-ratio: 4/3;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    z-index: 10; 
 }
 
 .local-video {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;  
 }
 
 .hangup-btn {
-  background: #e53e3e;
-  color: #fff;
-  border: none;
-  border-radius: 25px;
-  padding:10px 12px;
-  font-size: 0.7rem;
-  font-weight: 600;
-  cursor: pointer;
-  margin: 10px;
+    background: #e53e3e;
+    color: #fff;
+    border: none;
+    border-radius: 25px;
+    padding: 10px 28px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 4px;
 }
 
+.hangup-btn:hover { background: #c53030; }

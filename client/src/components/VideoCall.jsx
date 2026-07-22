@@ -2,16 +2,16 @@ import { useEffect } from 'react'
 import '../styles/VideoCall.css'
 
 const VideoCall = ({ setLocalVideoRef, setRemoteVideoRef, incomingCall, callState, activeDM, hangup, remoteStream, localStream, remoteStreamReady }) => {
-    
+
     useEffect(() => {
-    const el = document.querySelector('.remote-video')
-    if (el && remoteStream?.current && !el.srcObject) {
-      el.srcObject = remoteStream.current
-    }
-  }, [remoteStreamReady, callState])
+        const el = document.querySelector('.remote-video')
+        if (el && remoteStream?.current && !el.srcObject) {
+            el.srcObject = remoteStream.current
+        }
+    }, [remoteStreamReady, callState])
 
 
-    if(callState !== 'calling' && callState !== 'in_call') return null
+    if (callState !== 'calling' && callState !== 'in_call') return null
     const otherName = activeDM?.name || incomingCall?.callerName || 'User'
 
     return (
@@ -24,12 +24,22 @@ const VideoCall = ({ setLocalVideoRef, setRemoteVideoRef, incomingCall, callStat
                 <div className="call-videos">
 
                     <div className="remote-video-wrapper">
-                        <video 
+                        <video
                             ref={setRemoteVideoRef}
                             autoPlay
                             playsInline
                             className="remote-video"
                         />
+
+                        <div className="local-video-wrapper">
+                            <video
+                                ref={setLocalVideoRef}
+                                autoPlay
+                                playsInline
+                                muted
+                                className="local-video"
+                            />
+                        </div>
 
                         {callState === 'calling' && (
                             <div className="calling-placeholder">
@@ -40,17 +50,6 @@ const VideoCall = ({ setLocalVideoRef, setRemoteVideoRef, incomingCall, callStat
                                 <p>Ringing....</p>
                             </div>
                         )}
-                    </div>
-
-
-                    <div className="local-video-wrapper">
-                        <video
-                            ref={setLocalVideoRef}
-                            autoPlay 
-                            playsInline
-                            muted
-                            className="local-video"
-                        />
                     </div>
 
                     <button className="hangup-btn" onClick={hangup}>
