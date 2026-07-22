@@ -1,7 +1,7 @@
 .chat-window {
   display: flex;
   flex-direction: column;
-  background: rgba(10, 0, 30, 0.337);
+  background: rgba(10, 0, 30, 0.808);
   overflow: hidden;
 }
 
