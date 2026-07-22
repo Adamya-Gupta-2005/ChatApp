@@ -1,6 +1,6 @@
 .sidebar {
-  background: rgba(59, 59, 59, 0.122);
-  border-right: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.05);
+  border-right: 1px solid rgba(255, 255, 255, 0.264);
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -9,7 +9,7 @@
 
 .sidebar-header {
   padding: 20px 16px 16px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.29);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
   display: flex;
   justify-content: center;
   align-items: center;
