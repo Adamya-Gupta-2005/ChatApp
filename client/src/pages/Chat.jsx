@@ -155,7 +155,7 @@ const Chat = () => {
         callState, incomingCall,
         localVideoRef, remoteVideoRef,
         startCall, acceptCall,
-        rejectCall, hangup, localStream, remoteStream
+        rejectCall, hangup, localStream, remoteStream, remoteStreamReady
     } = useWebRTC(socket, user, activeDM)
 
 
@@ -199,6 +199,7 @@ const Chat = () => {
                 hangup={hangup}
                 localStream={localStream}
                 remoteStream={remoteStream}
+                remoteStreamReady={remoteStreamReady}
             />
 
             <IncomingCall 

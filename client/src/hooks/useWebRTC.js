@@ -18,6 +18,8 @@ const useWebRTC = (socket, currentUser, activeDM) => {
     const [incomingCall, setIncomingCall] = useState(null)
     //offer, from, callername
 
+    const [remoteStreamReady, setRemoteStreamReady] = useState(false)
+
     const localVideoRef = useRef(null)
     const remoteVideoRef = useRef(null)
     const peerConnection = useRef(null)
@@ -60,6 +62,7 @@ const useWebRTC = (socket, currentUser, activeDM) => {
             if (remoteVideoRef.current) {
                 remoteVideoRef.current.srcObject = e.streams[0]
             }
+            setRemoteStreamReady(true)
         }
 
         peerConnection.current = pc
@@ -84,6 +87,7 @@ const useWebRTC = (socket, currentUser, activeDM) => {
         if (localVideoRef.current) localVideoRef.current.srcObject = null
         if (remoteVideoRef.current) remoteVideoRef.current.srcObject = null
 
+        setRemoteStreamReady(false)
         setCallState('idle')
         setIncomingCall(null)
     }
@@ -213,7 +217,7 @@ const useWebRTC = (socket, currentUser, activeDM) => {
     }, [socket, activeDM])
 
     return {
-        callState, incomingCall, localVideoRef, remoteVideoRef, startCall, acceptCall, rejectCall, hangup, localStream, remoteStream
+        callState, incomingCall, localVideoRef, remoteVideoRef, startCall, acceptCall, rejectCall, hangup, localStream, remoteStream, remoteStreamReady
     }
 }
 
