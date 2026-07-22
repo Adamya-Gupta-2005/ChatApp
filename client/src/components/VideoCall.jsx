@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import '../styles/VideoCall.css'
 
-const VideoCall = ({ localVideoRef, remoteVideoRef, callState, activeDM, hangup, localStream, remoteStream, remoteStreamReady }) => {
+const VideoCall = ({ localVideoRef, remoteVideoRef, setRemoteVideoRef, incomingCall, callState, activeDM, hangup, localStream, remoteStream, remoteStreamReady }) => {
     
     useEffect(() => {
         // attaching streams after the video component mounts on videoRef
@@ -15,19 +15,20 @@ const VideoCall = ({ localVideoRef, remoteVideoRef, callState, activeDM, hangup,
     },[callState, remoteStreamReady])
 
     if(callState !== 'calling' && callState !== 'in_call') return null
+    const otherName = activeDM?.name || incomingCall?.callerName || 'User'
 
     return (
         <div className="call-overlay">
             <div className="call-modal">
                 <h3 className="call-title">
-                    {callState === 'calling' ? `Calling ${activeDM?.name}...` : `In call with ${activeDM?.name}`}
+                    {callState === 'calling' ? `Calling ${otherName}...` : `In call with ${otherName}`}
                 </h3>
 
                 <div className="call-videos">
 
                     <div className="remote-video-wrapper">
                         <video 
-                            ref={remoteVideoRef}
+                            ref={setRemoteVideoRef}
                             autoPlay
                             playsInline
                             className="remote-video"
@@ -36,7 +37,7 @@ const VideoCall = ({ localVideoRef, remoteVideoRef, callState, activeDM, hangup,
                         {callState === 'calling' && (
                             <div className="calling-placeholder">
                                 <div className="calling-avatar">
-                                    {activeDM?.name?.[0]?.toUpperCase()}
+                                    {otherName[0]?.toUpperCase()}
                                 </div>
 
                                 <p>Ringing....</p>

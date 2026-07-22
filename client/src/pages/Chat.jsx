@@ -153,7 +153,7 @@ const Chat = () => {
 
     const {
         callState, incomingCall,
-        localVideoRef, remoteVideoRef,
+        localVideoRef, remoteVideoRef, setRemoteVideoRef,
         startCall, acceptCall,
         rejectCall, hangup, localStream, remoteStream, remoteStreamReady
     } = useWebRTC(socket, user, activeDM)
@@ -194,9 +194,11 @@ const Chat = () => {
             <VideoCall 
                 localVideoRef={localVideoRef}
                 remoteVideoRef={remoteVideoRef}
+                setRemoteVideoRef={setRemoteVideoRef}
                 callState={callState}
                 activeDM={activeDM}
                 hangup={hangup}
+                incomingCall={incomingCall}
                 localStream={localStream}
                 remoteStream={remoteStream}
                 remoteStreamReady={remoteStreamReady}
