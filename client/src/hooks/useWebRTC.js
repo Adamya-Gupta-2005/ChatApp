@@ -1,33 +1,8 @@
 import { useEffect } from "react"
 import { useState } from "react"
 import { useRef, useCallback } from "react"
+import axios from 'axios'
 
-
-const iceServers = {
-    iceServers: [
-        { urls: 'stun:stun.l.google.com:19302' },
-        { urls: 'stun:stun1.l.google.com:19302' },
-
-        //STUN just discovers your public IP. TURN actually relays the video when peer-to-peer fails due to NAT/firewall restrictions.
-
-        {
-            urls: 'turn:openrelay.metered.ca:80',
-            username: 'openrelayproject',
-            credential: 'openrelayproject'
-        },
-        {
-            urls: 'turn:openrelay.metered.ca:443',
-            username: 'openrelayproject',
-            credential: 'openrelayproject'
-        },
-        {
-            urls: 'turn:openrelay.metered.ca:443?transport=tcp',
-            username: 'openrelayproject',
-            credential: 'openrelayproject'
-        }
-
-    ]
-}
 
 const useWebRTC = (socket, currentUser, activeDM) => {
 
@@ -38,6 +13,7 @@ const useWebRTC = (socket, currentUser, activeDM) => {
     //offer, from, callername
 
     const [remoteStreamReady, setRemoteStreamReady] = useState(false)
+    const [iceConfig, setIceConfig] = useState(null)
 
     const localVideoRef = useRef(null)
 
@@ -46,6 +22,26 @@ const useWebRTC = (socket, currentUser, activeDM) => {
     const remoteStream = useRef(null)
 
     const remoteVideoRef = useRef(null)
+
+
+    useEffect(() => {
+        const fetchIceConfig = async () => {
+            try {
+                const res = await axios.get(
+                    `${import.meta.env.VITE_BACKEND_URL}/api/users/ice-config`,
+                    { withCredentials: true }
+                )
+                setIceConfig(res.data)
+                console.log('ICE config loaded:', res.data)
+            } catch (error) {
+                console.error('Failed to fetch ICE config:', error)
+                setIceConfig({ iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] })
+            }
+        }
+        fetchIceConfig()
+    }, [])
+
+
     const setRemoteVideoRef = useCallback((element) => {
         remoteVideoRef.current = element
         if (element && remoteStream.current) {
@@ -78,7 +74,7 @@ const useWebRTC = (socket, currentUser, activeDM) => {
     }
 
     const createPeer = (targetUserId) => {
-        const pc = new RTCPeerConnection(iceServers)
+        const pc = new RTCPeerConnection(iceConfig || { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] })
 
         pc.oniceconnectionstatechange = () => {
             console.log('ICE state:', pc.iceConnectionState)
