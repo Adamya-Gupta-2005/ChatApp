@@ -32,7 +32,7 @@ const useWebRTC = (socket, currentUser, activeDM) => {
                     { withCredentials: true }
                 )
                 setIceConfig(res.data)
-                console.log('ICE config loaded:', res.data)
+                
             } catch (error) {
                 console.error('Failed to fetch ICE config:', error)
                 setIceConfig({ iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] })
