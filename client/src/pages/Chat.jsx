@@ -38,7 +38,7 @@ const Chat = () => {
                 setRooms(roomsRes.data.rooms);
                 setUsers(usersRes.data.users);
 
-                if(socket) {
+                if (socket) {
                     socket.emit('get_online_users')
                 }
 
@@ -153,9 +153,11 @@ const Chat = () => {
 
     const {
         callState, incomingCall,
-        localVideoRef, remoteVideoRef, setRemoteVideoRef,
+        localVideoRef, remoteVideoRef,
+        setRemoteVideoRef, setLocalVideoRef,
         startCall, acceptCall,
-        rejectCall, hangup, localStream, remoteStream, remoteStreamReady
+        rejectCall, hangup,
+        localStream, remoteStream, remoteStreamReady
     } = useWebRTC(socket, user, activeDM)
 
 
@@ -191,9 +193,8 @@ const Chat = () => {
                 onStartCall={startCall}
             />
 
-            <VideoCall 
-                localVideoRef={localVideoRef}
-                remoteVideoRef={remoteVideoRef}
+            <VideoCall
+                setLocalVideoRef={setLocalVideoRef}  
                 setRemoteVideoRef={setRemoteVideoRef}
                 callState={callState}
                 activeDM={activeDM}
@@ -204,7 +205,7 @@ const Chat = () => {
                 remoteStreamReady={remoteStreamReady}
             />
 
-            <IncomingCall 
+            <IncomingCall
                 incomingCall={incomingCall}
                 callState={callState}
                 acceptCall={acceptCall}

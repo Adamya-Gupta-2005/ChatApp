@@ -1,6 +1,6 @@
 import { useEffect } from "react"
 import { useState } from "react"
-import { useRef } from "react"
+import { useRef, useCallback } from "react"
 
 
 const iceServers = {
@@ -27,13 +27,19 @@ const useWebRTC = (socket, currentUser, activeDM) => {
     const remoteStream = useRef(null)
 
     const remoteVideoRef = useRef(null)
-    const setRemoteVideoRef = (element) => {
+    const setRemoteVideoRef = useCallback((element) => {
         remoteVideoRef.current = element
-        
         if (element && remoteStream.current) {
             element.srcObject = remoteStream.current
         }
-    }
+    }, [])
+
+    const setLocalVideoRef = useCallback((element) => {
+        localVideoRef.current = element
+        if (element && localStream.current) {
+            element.srcObject = localStream.current
+        }
+    }, [])
 
     const getUserMedia = async () => {
         const stream = await navigator.mediaDevices.getUserMedia({
@@ -71,7 +77,7 @@ const useWebRTC = (socket, currentUser, activeDM) => {
             if (remoteVideoRef.current) {
                 remoteVideoRef.current.srcObject = e.streams[0]
             }
-            setRemoteStreamReady(true)
+            setRemoteStreamReady(prev => !prev)
         }
 
         peerConnection.current = pc
@@ -95,6 +101,7 @@ const useWebRTC = (socket, currentUser, activeDM) => {
         //clear video elements
         if (localVideoRef.current) localVideoRef.current.srcObject = null
         if (remoteVideoRef.current) remoteVideoRef.current.srcObject = null
+        remoteStream.current = null
 
         setRemoteStreamReady(false)
         setCallState('idle')
@@ -136,7 +143,6 @@ const useWebRTC = (socket, currentUser, activeDM) => {
     const acceptCall = async () => {
         if (!incomingCall) return
         try {
-            setCallState('in_call')
 
             const stream = await getUserMedia()
             const pc = createPeer(incomingCall.from)
@@ -154,6 +160,8 @@ const useWebRTC = (socket, currentUser, activeDM) => {
                 answer,
                 to: incomingCall.from
             })
+
+            setCallState('in_call')
         } catch (err) {
             console.error('acceptCall error:', err)
             cleanup()
@@ -226,7 +234,10 @@ const useWebRTC = (socket, currentUser, activeDM) => {
     }, [socket, activeDM])
 
     return {
-        callState, incomingCall, localVideoRef, remoteVideoRef, setRemoteVideoRef, startCall, acceptCall, rejectCall, hangup, localStream, remoteStream, remoteStreamReady
+        callState, incomingCall, localVideoRef, remoteVideoRef,
+        setRemoteVideoRef, setLocalVideoRef,
+        startCall, acceptCall, rejectCall, hangup,
+        localStream, remoteStream, remoteStreamReady
     }
 }
 

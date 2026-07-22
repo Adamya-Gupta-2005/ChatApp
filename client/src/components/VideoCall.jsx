@@ -1,18 +1,15 @@
 import { useEffect } from 'react'
 import '../styles/VideoCall.css'
 
-const VideoCall = ({ localVideoRef, remoteVideoRef, setRemoteVideoRef, incomingCall, callState, activeDM, hangup, localStream, remoteStream, remoteStreamReady }) => {
+const VideoCall = ({ setLocalVideoRef, setRemoteVideoRef, incomingCall, callState, activeDM, hangup, remoteStream, localStream, remoteStreamReady }) => {
     
     useEffect(() => {
-        // attaching streams after the video component mounts on videoRef
-        if(remoteVideoRef.current && remoteStream?.current) {
-            remoteVideoRef.current.srcObject = remoteStream.current
-        }
+    const el = document.querySelector('.remote-video')
+    if (el && remoteStream?.current && !el.srcObject) {
+      el.srcObject = remoteStream.current
+    }
+  }, [remoteStreamReady, callState])
 
-        if(localVideoRef.current && localStream?.current){
-            localVideoRef.current.srcObject = localStream.current
-        }
-    },[callState, remoteStreamReady])
 
     if(callState !== 'calling' && callState !== 'in_call') return null
     const otherName = activeDM?.name || incomingCall?.callerName || 'User'
@@ -48,7 +45,7 @@ const VideoCall = ({ localVideoRef, remoteVideoRef, setRemoteVideoRef, incomingC
 
                     <div className="local-video-wrapper">
                         <video
-                            ref={localVideoRef}
+                            ref={setLocalVideoRef}
                             autoPlay 
                             playsInline
                             muted
