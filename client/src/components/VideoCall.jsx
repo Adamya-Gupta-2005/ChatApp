@@ -1,6 +1,19 @@
+import { useEffect } from 'react'
 import '../styles/VideoCall.css'
 
-const VideoCall = ({ localVideoRef, remoteVideoRef, callState, activeDM, hangup }) => {
+const VideoCall = ({ localVideoRef, remoteVideoRef, callState, activeDM, hangup, localStream, remoteStream }) => {
+    
+    useEffect(() => {
+        // attaching streams after the video component mounts on videoRef
+        if(remoteVideoRef.current && remoteStream?.current) {
+            remoteVideoRef.current.srcObject = remoteStream.current
+        }
+
+        if(localVideoRef.current && localStream?.current){
+            localVideoRef.current.srcObject = localStream.current
+        }
+    },[callState])
+
     if(callState !== 'calling' && callState !== 'in_call') return null
 
     return (

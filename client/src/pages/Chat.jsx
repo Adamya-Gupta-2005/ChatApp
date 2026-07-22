@@ -37,13 +37,18 @@ const Chat = () => {
 
                 setRooms(roomsRes.data.rooms);
                 setUsers(usersRes.data.users);
+
+                if(socket) {
+                    socket.emit('get_online_users')
+                }
+
             } catch (error) {
                 console.log(error)
             }
         }
 
         fetchData()
-    }, [])
+    }, [socket])
 
     useEffect(() => {
         if (!socket) return;
@@ -150,7 +155,7 @@ const Chat = () => {
         callState, incomingCall,
         localVideoRef, remoteVideoRef,
         startCall, acceptCall,
-        rejectCall, hangup
+        rejectCall, hangup, localStream, remoteStream
     } = useWebRTC(socket, user, activeDM)
 
 
@@ -192,6 +197,8 @@ const Chat = () => {
                 callState={callState}
                 activeDM={activeDM}
                 hangup={hangup}
+                localStream={localStream}
+                remoteStream={remoteStream}
             />
 
             <IncomingCall 

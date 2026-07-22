@@ -22,6 +22,7 @@ const useWebRTC = (socket, currentUser, activeDM) => {
     const remoteVideoRef = useRef(null)
     const peerConnection = useRef(null)
     const localStream = useRef(null)
+    const remoteStream = useRef(null)
 
     const getUserMedia = async () => {
         const stream = await navigator.mediaDevices.getUserMedia({
@@ -55,6 +56,7 @@ const useWebRTC = (socket, currentUser, activeDM) => {
 
         // when remote stream arrives, attach to remote video element
         pc.ontrack = (e) => {
+            remoteStream.current = e.streams[0]
             if (remoteVideoRef.current) {
                 remoteVideoRef.current.srcObject = e.streams[0]
             }
@@ -211,7 +213,7 @@ const useWebRTC = (socket, currentUser, activeDM) => {
     }, [socket, activeDM])
 
     return {
-        callState, incomingCall, localVideoRef, remoteVideoRef, startCall, acceptCall, rejectCall, hangup
+        callState, incomingCall, localVideoRef, remoteVideoRef, startCall, acceptCall, rejectCall, hangup, localStream, remoteStream
     }
 }
 

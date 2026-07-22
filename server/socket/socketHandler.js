@@ -142,6 +142,11 @@ export const initSocket = (io) => {
             }
         })
 
+        socket.on('get_online_users', ()=> {
+            const userIds = Object.keys(userSocketMap)
+            socket.emit('online_users', userIds)
+        })
+
         //disconnect
         socket.on('disconnect', async () => {
             if (socket.userId) {
