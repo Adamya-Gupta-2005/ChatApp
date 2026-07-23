@@ -23,6 +23,9 @@ const useWebRTC = (socket, currentUser, activeDM) => {
 
     const remoteVideoRef = useRef(null)
 
+    const iceCandidateBuffer = useRef([])
+    const remoteDescSet = useRef(false)
+
 
     useEffect(() => {
         const fetchIceConfig = async () => {
@@ -73,6 +76,22 @@ const useWebRTC = (socket, currentUser, activeDM) => {
         return stream
     }
 
+
+    const setRemoteDescriptionAndFlush = async (pc, description) => {
+        await pc.setRemoteDescription(new RTCSessionDescription(description))
+        remoteDescSet.current = true
+
+        for(const candidate of iceCandidateBuffer.current) {
+            try {
+                await pc.addIceCandidate(new RTCIceCandidate(candidate))
+            } catch (error) {
+                console.log('Buffered candidate',error)
+            }
+        }
+        iceCandidateBuffer.current = []
+    }
+
+
     const createPeer = (targetUserId) => {
         const pc = new RTCPeerConnection(iceConfig || { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] })
 
@@ -121,6 +140,9 @@ const useWebRTC = (socket, currentUser, activeDM) => {
         if (localVideoRef.current) localVideoRef.current.srcObject = null
         if (remoteVideoRef.current) remoteVideoRef.current.srcObject = null
         remoteStream.current = null
+
+        iceCandidateBuffer.current = []
+        remoteDescSet.current = false
 
         setRemoteStreamReady(false)
         setCallState('idle')
@@ -175,6 +197,8 @@ const useWebRTC = (socket, currentUser, activeDM) => {
             //set remote description from offer
             await pc.setRemoteDescription(new RTCSessionDescription(incomingCall.offer))
 
+            await setRemoteDescriptionAndFlush(pc, incomingCall.offer)
+
             //create answer
             const answer = await pc.createAnswer()
             await pc.setLocalDescription(answer)
@@ -220,11 +244,11 @@ const useWebRTC = (socket, currentUser, activeDM) => {
         //a recieves answer from b after b accepted
         socket.on('call_accepted', async ({ answer }) => {
             try {
-                await peerConnection.current?.setRemoteDescription(new RTCSessionDescription(answer))
+                await setRemoteDescriptionAndFlush(peerConnection.current, answer)
                 setCallState('in_call')
             } catch (error) {
                 console.error('call_accepted error:', error)
-            }
+            }  
         })
 
         //a reciees rejection from b 
@@ -241,7 +265,13 @@ const useWebRTC = (socket, currentUser, activeDM) => {
         //both recieve ICE candidate from each other
         socket.on('ice_candidate', async ({ candidate }) => {
             try {
-                await peerConnection.current?.addIceCandidate(new RTCIceCandidate(candidate))
+                //if remote desc not set yet buffer the candidate
+                if(!remoteDescSet.current) {
+                    iceCandidateBuffer.current.push(candidate)
+                } else {
+                    //remote desc set add directly
+                    await peerConnection.current?.addIceCandidate(new RTCIceCandidate(candidate))
+                }
             } catch (error) {
                 console.log('ice_candidate error:', error)
             }
